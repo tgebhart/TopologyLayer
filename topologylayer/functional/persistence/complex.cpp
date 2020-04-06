@@ -178,6 +178,30 @@ void SimplicialComplex::extend_flag(torch::Tensor x) {
 	}
 }
 
+void SimplicialComplex::extend_flag_distance(torch::Tensor x) {
+	const size_t N(cells.size());
+	full_function.resize(N);
+	function_map.resize(N);
+
+	for (size_t i = 0; i < N; i++) {
+
+		if (cells[i].size() == 1) {
+			// if 0-dim cell, filtration time is 0
+			full_function[i] = std::pair<float, int>((float) 0.0, 0);
+			function_map[i] = {0};
+		} else {
+			// if higher-dim simplex, filtration time is latest edge
+			float max_f = 0.0;
+			for (auto it1 = cells[i].begin(); it1 < cells[i].end(); ++it1) {
+				for (auto it2 = cells[i].begin(); it2 < it1; ++it2) {
+					max_f = *x[i-ncells[0]].data<float>();
+					function_map[i] = {*it2, *it1}; // sorted order
+					}
+				}
+			full_function[i] = std::pair<float,int>(max_f, cells[i].size()-1);
+	  }
+	}
+}
 
 void SimplicialComplex::sortedOrder() {
     filtration_perm.resize(full_function.size());

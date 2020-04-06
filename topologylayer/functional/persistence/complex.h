@@ -89,6 +89,9 @@ class SimplicialComplex{
     // extend filtration on 1-cells to filtration on all cells
     void extend_flag(torch::Tensor f);
 
+    // extend filtration on 1-cells to filtration on all cells
+    void extend_flag_distance(torch::Tensor f);
+
     // fill in filtration order
     void sortedOrder();
 
